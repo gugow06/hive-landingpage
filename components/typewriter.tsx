@@ -4,12 +4,14 @@ import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
 
 /**
- * Datilografa a frase quando ela entra em cena.
+ * Datilografa a frase em ciclo: escreve, segura, apaga, escreve de novo.
  *
- * O texto completo fica num `sr-only` e a cópia animada é `aria-hidden`: leitor
- * de tela lê a frase inteira de uma vez em vez de acompanhar letra por letra.
+ * O texto completo fica num `sr-only` e a cópia animada é `aria-hidden`: o
+ * leitor de tela lê a frase inteira uma vez, em vez de acompanhar cada letra —
+ * e o ciclo não fica reanunciando a mesma frase para sempre.
+ *
  * A cópia animada nasce com o texto completo, então sem JS (ou com movimento
- * reduzido) a frase simplesmente já está lá.
+ * reduzido) a frase simplesmente já está lá, parada.
  */
 export function Typewriter({
   text,
@@ -37,16 +39,30 @@ export function Typewriter({
         if (cancelled) return;
         gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
+        const speed = 0.035;
         const context = gsap.context(() => {
-          const timeline = gsap.timeline({
-            scrollTrigger: { trigger: first.parentElement, start: "top 80%", once: true },
+          const loop = gsap.timeline({
+            repeat: -1,
+            paused: true,
+            // Sem isso o ciclo continuaria rodando fora da tela.
+            scrollTrigger: {
+              trigger: first.parentElement,
+              start: "top 85%",
+              end: "bottom 15%",
+              onToggle: ({ isActive }) => (isActive ? loop.play() : loop.pause()),
+            },
           });
-          // `delimiter: ""` digita caractere a caractere; a velocidade sai da
-          // duração dividida pelo tamanho de cada trecho.
-          timeline
+
+          loop
             .set([first, second], { text: "" })
-            .to(first, { text: text, duration: text.length * 0.035, ease: "none" })
-            .to(second, { text: highlight, duration: highlight.length * 0.035, ease: "none" }, ">");
+            .to(first, { text, duration: text.length * speed, ease: "none" })
+            .to(second, { text: highlight, duration: highlight.length * speed, ease: "none" })
+            // Segura a frase inteira antes de apagar.
+            .to({}, { duration: 2.4 })
+            // Apaga na ordem inversa, mais rápido do que escreve.
+            .to(second, { text: "", duration: highlight.length * speed * 0.45, ease: "none" })
+            .to(first, { text: "", duration: text.length * speed * 0.45, ease: "none" })
+            .to({}, { duration: 0.4 });
         }, first.parentElement ?? undefined);
 
         kill = () => context.revert();

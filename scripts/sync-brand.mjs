@@ -6,7 +6,7 @@
 // O Next só serve o que está em `public/`, então os arquivos são copiados com
 // nomes normalizados (sem espaço, sem acento) — é por esses nomes que o site
 // referencia as logos.
-import { copyFileSync, mkdirSync, readdirSync, existsSync } from "node:fs";
+import { copyFileSync, mkdirSync, readdirSync, statSync, existsSync } from "node:fs";
 import { dirname, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -36,14 +36,26 @@ if (!existsSync(from)) {
 mkdirSync(to, { recursive: true });
 
 let count = 0;
-for (const file of readdirSync(from)) {
-  const ext = extname(file).toLowerCase();
-  if (![".png", ".svg", ".jpg", ".jpeg", ".webp"].includes(ext)) continue;
-  const base = file.slice(0, -ext.length);
-  const name = known[base.toLowerCase()] ?? slug(base);
-  copyFileSync(resolve(from, file), resolve(to, name + ext));
-  console.log(`${file} → public/brand/${name}${ext}`);
-  count++;
+
+/** Copia uma pasta, preservando subpastas (`parceiros/` vira `brand/parceiros/`). */
+function publish(sourceDir, targetDir, prefix = "") {
+  mkdirSync(targetDir, { recursive: true });
+  for (const file of readdirSync(sourceDir)) {
+    const full = resolve(sourceDir, file);
+    if (statSync(full).isDirectory()) {
+      publish(full, resolve(targetDir, slug(file)), `${prefix}${slug(file)}/`);
+      continue;
+    }
+    const ext = extname(file).toLowerCase();
+    if (![".png", ".svg", ".jpg", ".jpeg", ".webp"].includes(ext)) continue;
+    const base = file.slice(0, -ext.length);
+    const name = known[base.toLowerCase()] ?? slug(base);
+    copyFileSync(full, resolve(targetDir, name + ext));
+    console.log(`${file} → public/brand/${prefix}${name}${ext}`);
+    count++;
+  }
 }
+
+publish(from, to);
 
 console.log(`${count} arquivo(s) de marca publicados`);

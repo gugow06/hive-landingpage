@@ -9,6 +9,8 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+import { GithubMark, REPO } from "./github";
+import { FaqItem } from "./faq-item";
 import { Rise } from "./primitives";
 import { Timeline } from "./timeline";
 
@@ -375,18 +377,7 @@ export function Faq() {
 
         <Rise delay={100} stagger="details" className="space-y-3">
           {faq.map((item) => (
-            <details key={item.q} className="card group px-7 py-5">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-6 font-display text-lg font-medium text-ink marker:hidden">
-                {item.q}
-                <span
-                  aria-hidden="true"
-                  className="mt-1 shrink-0 text-2xl leading-none font-light text-ink-faint transition-transform duration-300 group-open:rotate-45"
-                >
-                  +
-                </span>
-              </summary>
-              <p className="mt-4 text-ink-soft">{item.a}</p>
-            </details>
+            <FaqItem key={item.q} question={item.q} answer={item.a} />
           ))}
         </Rise>
       </div>
@@ -396,41 +387,92 @@ export function Faq() {
 
 /* ---------------------------------------------------------------- rodapé */
 
+const PARTNERS: { name: string; href: string; logo?: string }[] = [
+  { name: "Oracle", href: "https://www.oracle.com/br/", logo: "parceiros/oracle-logo.png" },
+  { name: "FIAP", href: "https://www.fiap.com.br/", logo: "parceiros/logo-fiap.png" },
+];
+
+
 export function Footer() {
   return (
     <footer className="footer-gold relative mt-10 overflow-hidden">
-      {/* Favo manuscrito em marrom claro translúcido, gerado por `npm run comb`. */}
-      <div aria-hidden="true" className="footer-sketch pointer-events-none absolute inset-0" />
+      {/* Mesma composição do diferencial: malha hexagonal e brilho radial,
+          aqui em marrom claro sobre o degradê dourado. */}
+      <div
+        aria-hidden="true"
+        className="comb-brown pointer-events-none absolute inset-0 opacity-35 [mask-image:radial-gradient(1300px_700px_at_50%_122%,black_20%,rgba(0,0,0,0.35)_75%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 [background:radial-gradient(700px_at_50%_125%,rgba(255,255,255,0.35),transparent_60%)]"
+      />
 
       <div className="shell relative py-20">
         <p className="display max-w-3xl text-[clamp(1.75rem,3.5vw,2.25rem)] text-ink-900">
           Toda colmeia começa com <span className="text-[#6b3f00]">uma rainha e uma visão.</span>
         </p>
-        <a
-          href="#lista"
-          className="btn mt-8 bg-ink-900 text-white transition-colors hover:bg-[#2e2e2e]"
-        >
-          Entrar na lista de espera
-          <ArrowRight className="size-5" aria-hidden="true" />
-        </a>
 
-        <div className="mt-16 space-y-4 border-t border-[rgba(23,23,23,0.18)] pt-8 text-sm text-[#5c4a1f]">
-          <p className="max-w-2xl">
-            O Hive é um fork do{" "}
+        <div className="mt-14 grid gap-10 border-t border-[rgba(23,23,23,0.16)] pt-8 md:grid-cols-[1fr_auto] md:gap-16">
+          {/* Informação à esquerda, parceiros à direita. */}
+          <div className="space-y-4 text-sm text-[#5c4a1f]">
+            <p className="max-w-xl">
+              O Hive é um fork do{" "}
+              <a
+                href="https://github.com/paperclipai/paperclip"
+                className="font-medium text-ink-900 underline underline-offset-4"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Paperclip
+              </a>
+              , o plano de controle open source para times de agentes de IA — com o Grafo de
+              Conhecimento e a identidade da colmeia por cima.
+            </p>
+            <p>
+              © {new Date().getFullYear()} Hive · feito no Brasil, com uma colmeia inteira de
+              agentes.
+            </p>
             <a
-              href="https://github.com/paperclipai/paperclip"
-              className="font-medium text-ink-900 underline underline-offset-4"
+              href={REPO}
               target="_blank"
               rel="noreferrer"
+              className="tap inline-flex items-center gap-2 font-medium text-ink-900 transition-opacity hover:opacity-70"
             >
-              Paperclip
+              <GithubMark className="size-5" />
+              Código no GitHub
             </a>
-            , o plano de controle open source para times de agentes de IA — com o Grafo de
-            Conhecimento e a identidade da colmeia por cima.
-          </p>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <p>© {new Date().getFullYear()} Hive. Todos os direitos reservados.</p>
-            <p>Feito no Brasil, com uma colmeia inteira de agentes.</p>
+          </div>
+
+          {/* Os arquivos entram em `images/parceiros/` e são publicados por
+              `npm run sync:brand`; sem eles, o nome aparece como texto. */}
+          <div>
+            <p className="text-sm font-medium text-[#5c4a1f]">Parceiros</p>
+            <ul className="mt-4 flex flex-wrap items-center gap-x-7 gap-y-4">
+              {PARTNERS.map((partner) => (
+                <li key={partner.name}>
+                  <a
+                    href={partner.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="tap transition-opacity hover:opacity-70"
+                  >
+                    {partner.logo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={`/brand/${partner.logo}`}
+                        alt={partner.name}
+                        height={32}
+                        className="h-5 w-auto"
+                      />
+                    ) : (
+                      <span className="font-display text-base font-bold tracking-tight text-ink-900">
+                        {partner.name}
+                      </span>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

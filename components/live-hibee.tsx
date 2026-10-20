@@ -17,6 +17,7 @@ type Player = { destroy(): void };
 export function LiveHibee({
   palette = "golden-hour",
   pose = "idle",
+  muted = false,
   fallback,
   size = 220,
   label,
@@ -24,8 +25,12 @@ export function LiveHibee({
 }: {
   palette?: string;
   pose?: string;
+  /** Agente ainda não configurado: cinza, como o app desenha antes do teste passar. */
+  muted?: boolean;
   fallback: string;
   size?: number;
+  /** Rótulo acessível. Vazio marca o boneco como decorativo — é o caso do
+   *  gêmeo colorido empilhado sobre outro que já carrega o nome. */
   label: string;
   className?: string;
 }) {
@@ -44,18 +49,33 @@ export function LiveHibee({
       if (!entry?.isIntersecting || player || cancelled) return;
       observer.disconnect();
 
-      void Promise.all([import("@/lib/cliplab/runtime.js"), import("@/lib/cliplab/definition.js")])
+      void Promise.all([
+        import("@/lib/cliplab/runtime.js"),
+        import("@/lib/cliplab/definition.js"),
+      ])
         .then(([runtime, library]) => {
           if (cancelled || !host.current) return;
-          const appearance = { schemaVersion: 1, characterVersion: "cap-v1", paletteId: palette };
-          player = runtime.createCharacter(host.current, library.characterDefinition(appearance, false), {
-            animation: library.animationId(pose),
-            trackingScope: "page",
-            followCursor: true,
-            followRotation: true,
-            displaySize: size,
-            onError: () => setLive(false),
-          });
+          const appearance = {
+            schemaVersion: 1,
+            characterVersion: "cap-v1",
+            paletteId: palette,
+          };
+          player = runtime.createCharacter(
+            host.current,
+            library.characterDefinition(appearance, muted),
+            {
+              animation: library.animationId(pose),
+              trackingScope: "page",
+              followCursor: true,
+              followRotation: true,
+              displaySize: size,
+              // O runtime do produto usaria 2× o devicePixelRatio: ótimo para um
+              // personagem por vez, caro para cinco na mesma tela. 1,5 é o teto
+              // em que a silhueta ainda fica limpa neste tamanho.
+              pixelRatio: Math.min(window.devicePixelRatio || 1, 1.5),
+              onError: () => setLive(false),
+            },
+          );
           setLive(true);
         })
         .catch(() => setLive(false));
@@ -67,12 +87,13 @@ export function LiveHibee({
       observer.disconnect();
       player?.destroy();
     };
-  }, [palette, pose, size]);
+  }, [palette, pose, muted, size]);
 
   return (
     <span
-      role="img"
-      aria-label={label}
+      role={label ? "img" : undefined}
+      aria-label={label || undefined}
+      aria-hidden={label ? undefined : true}
       className={`relative inline-block shrink-0 ${className}`}
       style={{ width: size, height: size }}
     >

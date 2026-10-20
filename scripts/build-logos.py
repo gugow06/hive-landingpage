@@ -7,6 +7,7 @@ recortar, a logo fica minuscula dentro da propria caixa. Gera:
 
   public/brand/hive-wordmark.png  — o lettering da navbar
   app/icon.png                    — o icone da aba
+  public/brand/parceiros/*.png    — logos de parceiros, recortados
 
 Requer Pillow (`pip install pillow`).
 """
@@ -46,6 +47,19 @@ def main() -> None:
     icon.paste(symbol, ((size - symbol.width) // 2, (size - symbol.height) // 2), symbol)
     icon.save(APP / "icon.png", optimize=True)
     print("app/icon.png", icon.size)
+
+    # Logos de parceiros: mesma margem vazia dos originais, mesmo recorte.
+    partners_in = IMAGES / "parceiros"
+    if partners_in.is_dir():
+        partners_out = BRAND / "parceiros"
+        partners_out.mkdir(parents=True, exist_ok=True)
+        for source in sorted(partners_in.iterdir()):
+            if source.suffix.lower() not in {".png", ".webp", ".jpg", ".jpeg"}:
+                continue
+            logo = trimmed(source)
+            name = source.stem.lower().replace("_", "-").replace(" ", "-")
+            logo.save(partners_out / f"{name}.png", optimize=True)
+            print(f"public/brand/parceiros/{name}.png", logo.size)
 
 
 if __name__ == "__main__":

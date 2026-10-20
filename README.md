@@ -20,17 +20,48 @@ npm start
 ## Seções
 
 1. **Herói** — ocupa a viewport menos a navbar (`100svh - 88px`), com a
-   estrutura e a navbar portadas do AbacatePay: coluna de 1018px centrada e
-   translúcida, halo de cor na base. 30px separam o herói da próxima seção.
-2. **Os agentes** — o organograma se monta ao redor de Darnold conforme a
+   estrutura e a navbar portadas do AbacatePay. No plano de trás, a malha da
+   colmeia em canvas percorrida por poucas partículas âmbar de cauda longa
+   (`components/hex-field.tsx`): elas andam pelas arestas do próprio favo e
+   sorteiam o caminho a cada vértice, então cada uma faz um trajeto diferente.
+   O halo passa por cima e integra o reticulado ao fundo.
+
+   Cor e opacidade da malha vêm de `--hex-line` / `--hex-alpha`: no claro é um
+   cinza `#c1c1c1` com peso, porque o âmbar sumia no branco; no escuro é o
+   âmbar bem discreto, que no mesmo valor viraria uma grade gritante.
+
+   A malha é projetada como se estivesse colada na face **interna** de um
+   cilindro: o centro é o ponto mais distante e as bordas vêm na direção de
+   quem olha, então ali ela abre e estica em vez de comprimir. A distorção é
+   aplicada nos **nós**, não no desenho: assim as partículas, que andam pelas
+   arestas, curvam junto em vez de descolar da malha. Uma vinheta elíptica
+   apaga as pontas — só da malha, para as partículas manterem o brilho inteiro
+   por onde passarem.
+
+   O comprimento da cauda é velocidade × quadros guardados — aumentar só o
+   número de pontos não alonga nada se a partícula anda devagar.
+
+   30px separam o herói da próxima seção.
+2. **Os Hibees** — o organograma se monta ao redor de Darnold conforme a
    página desce, via ScrollTrigger com `scrub`. Os **cinco** agentes rodam o
-   runtime 3D. O título é datilografado ao entrar em cena, e o palco se encolhe
+   runtime 3D.
+
+   Darnold começa cinza e dormindo e ganha cor com o scroll, como se o primeiro
+   agente tivesse acabado de ser configurado. São dois bonecos empilhados — o
+   cinza (`muted`, pose `sleepy`) embaixo, o colorido acordado por cima — e a
+   cor chega pela opacidade. É a mesma técnica do onboarding do app
+   (`ui/src/components/onboarding/OnboardingCharacter.tsx`), que desenha o
+   agente apagado até a configuração passar; a troca seca de paleta cortaria o
+   movimento no meio. O cinza só some no fim, porque o "z" de quem dorme fica
+   fora da silhueta do acordado. O título é datilografado ao entrar em cena, e o palco se encolhe
    para caber em telas baixas — a hierarquia inteira é o que a seção tem a dizer.
 3. **Por que funciona** — os quatro cards de 280×262 do AbacatePay, aqui depois
    do organograma: primeiro você vê a colmeia montar, depois por que importa.
 4. **Como funciona** — linha do tempo horizontal; o trilho se preenche com o
    scroll e o marco da vez muda de cor. Vira pilha vertical abaixo de `md`.
-5. As demais seções seguem o conteúdo da apresentação de identidade.
+5. **Conexões** — carrossel dos conectores que o produto já fala.
+6. **Depoimentos** e **clientes** — só aparecem quando houver dados reais
+   (veja abaixo). As demais seções seguem a apresentação de identidade.
 
 ## Os Hibees
 
@@ -42,13 +73,32 @@ O site usa isso de duas formas:
 
 | | Como | Onde |
 | --- | --- | --- |
-| **Vivo** | runtime 3D em Three.js, acompanha o cursor | os cinco agentes da seção "Os agentes" |
-| **Estático** | SVG exportado sem DOM nem WebGL | fallback, e o print do produto |
+| **Vivo** | runtime 3D em Three.js, acompanha o cursor | só o Darnold, na seção "Os Hibees" |
+| **Estático** | SVG exportado sem DOM nem WebGL | os outros quatro, o fallback e o print |
 
-São cinco contextos WebGL na mesma tela. O runtime só acende o personagem
-quando ele entra na viewport e devolve o contexto ao sair; medido em headless
-com renderização por software, os cinco juntos ficam em ~53 fps, sem perda de
-contexto. Com `prefers-reduced-motion` nenhum acende e todos caem no SVG.
+**Um personagem vivo por vez.** É a regra do próprio produto, cujo
+`ui/src/lib/agent-character-slot.ts` traz um slot global com o comentário *"The
+app gets one live hero. Other placements retain their static image."*
+
+Medido aqui, em headless com renderização por software:
+
+| | fps | pior quadro |
+| --- | --- | --- |
+| cinco vivos | 49 | 83 ms |
+| só o Darnold | 155 | 17 ms |
+| rolando pela seção | 141 | 40 ms |
+
+Os outros quatro usam o SVG estático com a flutuação `.bob` em CSS, defasada
+por personagem — lê como vida e não custa quadro. Para voltar aos cinco vivos,
+troque o `<img>` por `<LiveHibee>` em `components/agents.tsx`.
+
+O site também baixa o `pixelRatio` do runtime de 2× o `devicePixelRatio` para
+1,5 (veja o ajuste documentado em `scripts/sync-cliplab.mjs`): 2× faz sentido
+num app com um personagem por vez e numa página inteira é desperdício.
+
+O runtime só acende o personagem quando ele entra na viewport e devolve o
+contexto ao sair, e o Darnold cinza é desmontado depois de acordar. Com
+`prefers-reduced-motion` nenhum acende e todos caem no SVG.
 
 ```bash
 npm run hibees        # exporta os SVGs para public/hibees/
@@ -95,6 +145,33 @@ app) e salva como `<tela>-light.png` e `<tela>-dark.png`. O componente `Shot`
 põe as duas no HTML e deixa o CSS escolher, para o print acompanhar o tema da
 página sem esperar o JS nem piscar o tema errado na carga.
 
+## Conexões
+
+A lista não é escrita à mão: sai de `packages/shared/src/app-definitions/` do
+produto, o mesmo catálogo que monta a tela de Connectors no app.
+
+```bash
+npm run connectors
+```
+
+Gera `lib/connectors.ts` e copia os SVGs das marcas para `public/connectors/`.
+Rode de novo quando o produto ganhar conectores novos.
+
+Os cards têm medida fixa (140×140) para o nome de duas linhas não desalinhar o
+logo em relação aos vizinhos. No modo escuro o logo vai sobre uma plaquinha
+branca: boa parte das marcas é desenhada em tinta escura e nem todas têm
+variante clara no catálogo — sem a plaquinha, algumas sumiam no fundo.
+
+## Prova social
+
+`lib/social-proof.ts` tem duas listas **vazias de propósito**: `TESTIMONIALS` e
+`CUSTOMERS`. As seções correspondentes não renderizam enquanto estiverem
+vazias — depoimento inventado numa landing é propaganda enganosa, então não há
+texto de exemplo que alguém possa confundir com cliente de verdade.
+
+Para publicar, preencha as listas (a forma está documentada no arquivo) e ponha
+as imagens em `public/social/`. A seção aparece sozinha.
+
 ## O organograma
 
 `lib/org.ts` **porta o algoritmo de layout do app** (`ui/src/pages/OrgChart.tsx`):
@@ -124,11 +201,16 @@ GSAP, Lenis e Three entram por `import()` dinâmico — não pesam no bundle ini
 Auditado nos dois temas com um script próprio (contraste calculado a partir do
 `getComputedStyle`, convertendo o `oklab()` que o Tailwind v4 emite):
 
-- **1.4.3 / 1.4.11** — todo texto passa AA nos dois temas. `#FFB800` puro só
-  alcança 1,7:1 sobre branco, então no claro o âmbar **de texto** escurece:
-  `--accent` (5,5:1) para texto miúdo e `--accent-display` (3,6:1) só em títulos
-  grandes, onde AA pede 3:1. Como **preenchimento** (botões, pontos, barras) o
-  âmbar da marca continua, porque ali o contraste é com o `#171717` por cima.
+- **1.4.3** — o modo escuro passa AA inteiro. O **modo claro não**: por decisão
+  de identidade o âmbar foi padronizado em `#FFB800` em todo o site, e sobre
+  branco ele dá **1,7:1**, abaixo do mínimo de 4,5:1 (3:1 para texto grande).
+  São 23 elementos: eyebrows e os trechos destacados dos títulos.
+
+  Os valores que passavam estão comentados ao lado dos tokens em
+  `app/globals.css` (`--accent`, `--accent-display`, `--panel-accent`) — trocar
+  os três resolve, ao custo de um âmbar mais escuro no claro. Como
+  **preenchimento** (botões, pontos, estrelas) o `#FFB800` nunca foi problema:
+  ali o contraste é com o `#171717` por cima.
 - **2.5.8** — nenhum alvo abaixo de 24×24 px.
 - **2.4.1 / 2.4.3** — link de pular para o conteúdo, foco visível, foco
   acompanha a âncora, `Esc` fecha o menu e devolve o foco ao botão.
@@ -155,14 +237,15 @@ desenvolvimento sem depender de serviço nenhum.
 
 ## Rodapé
 
-Ouro da marca (`#FFB800`) descendo para amarelo claro, com um favo
-**manuscrito** por cima — gerado por `npm run comb`, que desenha cada aresta do
-hexágono como curva com os pontos de controle deslocados e traça duas vezes com
-espessuras diferentes (o truque do Rough.js, feito à mão para não puxar a
-biblioteca). O ruído tem seed fixo, então o SVG versionado não muda a cada
-execução. Ele entra como `mask-image`, e a cor sai do `background-color`.
+Base bem clara com o âmbar forte (`#FFB800`) subindo pelo gradiente da borda
+de baixo, como o brilho radial do diferencial entra pelo canto. Por cima, a
+mesma malha hexagonal do diferencial em marrom claro translúcido
+(`.comb-brown`). É bloco de marca: não troca com o tema.
 
-É bloco de marca: não troca com o tema.
+Informação à esquerda (fork, copyright, GitHub), parceiros à direita. Os logos
+dos parceiros entram em `images/parceiros/`; `npm run sync:brand` publica e
+`python scripts/build-logos.py` recorta a margem transparente — sem arquivo, o
+nome aparece como texto. Não tem CTA: o formulário está logo acima.
 
 ## Marca
 

@@ -9,7 +9,7 @@
     "hibees": "node scripts/generate-hibees.mjs",
     "sync:cliplab": "node scripts/sync-cliplab.mjs",
     "sync:brand": "node scripts/sync-brand.mjs",
-    "comb": "node scripts/generate-comb-sketch.mjs"
+    "connectors": "node scripts/sync-connectors.mjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",

@@ -3,12 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { Menu, Moon, Sun, X } from "lucide-react";
+import { GithubMark, REPO } from "./github";
 import { HiveLogo } from "./primitives";
 
 const links = [
-  { href: "#agentes", label: "Os agentes" },
+  { href: "#agentes", label: "Os Hibees" },
   { href: "#beneficios", label: "Por que" },
   { href: "#memoria", label: "Memória" },
+  { href: "#conexoes", label: "Conexões" },
   { href: "#diferencial", label: "Diferencial" },
   { href: "#faq", label: "FAQ" },
 ];
@@ -97,6 +99,15 @@ export function Nav() {
           </ul>
 
           <div className="flex items-center gap-1 sm:gap-2">
+            <a
+              href={REPO}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Repositório do Hive no GitHub"
+              className="inline-flex size-11 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-surface hover:text-ink"
+            >
+              <GithubMark className="size-5" />
+            </a>
             <ThemeToggle />
             <a href="#lista" className="btn btn-primary hidden sm:inline-flex">
               Entrar na lista

@@ -8,7 +8,7 @@
 // mesma decisão que o produto tomou ao trazer o ClipLab de upstream.
 //
 // Rode de novo quando o personagem mudar no produto (`cap-v1` → nova versão).
-import { copyFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -39,6 +39,29 @@ if (!existsSync(from)) {
 mkdirSync(to, { recursive: true });
 for (const file of files) copyFileSync(resolve(from, file), resolve(to, file));
 copyFileSync(resolve(src, "LICENSE"), resolve(to, "LICENSE"));
+
+// Um ajuste sobre o vendorizado: o runtime do produto fixa o renderizador em
+// 2× o devicePixelRatio, o que faz sentido num app onde há um personagem por
+// vez. Aqui são cinco na mesma tela, e 2× derrubava a seção para 55 fps.
+// `createCharacter` passa a encaminhar `pixelRatio`, e o site escolhe o seu.
+//
+// A âncora é verificada: se o upstream mudar essa linha, o sync falha em vez
+// de copiar o arquivo sem o ajuste e deixar a lentidão voltar calada.
+{
+  const file = resolve(to, "runtime.js");
+  const source = readFileSync(file, "utf8");
+  const anchor = "displaySize: options.displaySize, framing: 'character' }";
+  if (!source.includes(anchor)) {
+    console.error("O runtime do ClipLab mudou: não achei onde encaminhar o pixelRatio.");
+    console.error(`Reveja ${file} e atualize a âncora em scripts/sync-cliplab.mjs.`);
+    process.exit(1);
+  }
+  writeFileSync(
+    file,
+    source.replace(anchor, "displaySize: options.displaySize, framing: 'character', pixelRatio: options.pixelRatio }"),
+  );
+  console.log("runtime.js: pixelRatio encaminhado");
+}
 
 writeFileSync(
   resolve(to, "README.md"),

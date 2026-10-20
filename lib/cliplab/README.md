@@ -9,4 +9,4 @@ herói e o avatar do app são literalmente o mesmo personagem.
 Origem: ClipLab (MIT) → Paperclip/Hive → este site. Licença em `LICENSE`.
 Única dependência externa: `three`.
 
-Sincronizado em 2026-10-19.
+Sincronizado em 2026-10-20.

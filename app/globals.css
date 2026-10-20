@@ -39,18 +39,22 @@
   --ink: #171717; /* 16.8:1 */
   --ink-soft: #52525b; /* 7.9:1 */
   --ink-faint: #65656d; /* 5.7:1 */
-  /* O âmbar mais vivo que ainda passa no AA sobre branco. #FFB800 puro dá
-     1,7:1 e seria ilegível; estes são o teto de saturação em cada faixa. */
-  --accent: #9c6c00; /* 4.6:1 — texto miúdo */
-  --accent-display: #c87f00; /* 3.2:1 — títulos grandes, onde AA pede 3:1 */
+  /* Âmbar da marca, padronizado em #FFB800 em todo o site por decisão de
+     identidade. Sobre branco ele dá 1,7:1, abaixo do mínimo do WCAG 1.4.3 —
+     os tons escuros que passavam no AA estão logo abaixo, comentados, caso a
+     legibilidade do modo claro volte a pesar mais que a fidelidade da cor. */
+  --accent: #ffb800; /* AA pediria #9c6c00 (4,6:1) */
+  --accent-display: #ffb800; /* AA pediria #c87f00 (3,2:1) */
   --line: #e5e5e7;
   --line-strong: #c9c9ce;
   --field-border: #8a8a91; /* 3.4:1 — 1.4.11, contorno de campo */
   --halo: rgba(255, 184, 0, 0.34);
+  --hex-line: 193, 193, 193; /* o reticulado do herói; âmbar sumiria no branco */
+  --hex-alpha: 0.85;
   --panel-bg: #fffaf0;
   --panel-ink: #171717;
   --panel-ink-soft: #5c4a1f; /* 4.9:1 sobre o painel claro */
-  --panel-accent: #8f6300; /* 5.1:1 — o painel é mais quente que o branco, o âmbar precisa descer um tom */
+  --panel-accent: #ffb800; /* AA pediria #8f6300 (5,1:1) */
   --panel-line: rgba(255, 184, 0, 0.45);
   --panel-card: #ffffff;
   --panel-card-line: rgba(23, 23, 23, 0.1);
@@ -74,6 +78,8 @@
   --line-strong: rgba(255, 255, 255, 0.24);
   --field-border: rgba(255, 255, 255, 0.4);
   --halo: rgba(255, 184, 0, 0.3);
+  --hex-line: 255, 184, 0;
+  --hex-alpha: 0.24; /* no escuro o âmbar já salta: a malha fica discreta */
   --panel-bg: #0f0f0f;
   --panel-ink: #ffffff;
   --panel-ink-soft: rgba(255, 255, 255, 0.7);
@@ -280,6 +286,12 @@
     background-size: 84px 147px;
   }
 
+  /* A mesma malha, em marrom claro — o rodapé reusa a textura do diferencial. */
+  .comb-brown {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath fill='%237c5620' fill-rule='evenodd' d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/svg%3E");
+    background-size: 84px 147px;
+  }
+
   /* Painel do diferencial. Segue o tema: no claro é um bloco quente sobre
      branco; no escuro afunda abaixo do fundo da página, senão some. */
   .panel {
@@ -291,19 +303,13 @@
   /* Rodapé: ouro da marca descendo para um amarelo claro, com o favo
      manuscrito por cima. É bloco de marca, então não troca com o tema. */
   .footer-gold {
-    background-color: #ffcc4d; /* base sólida: fallback do gradiente e cor de referência do contraste */
-    background-image: linear-gradient(160deg, #ffb800 0%, #ffcc4d 42%, #fff0c2 100%);
+    /* Base bem clara; o âmbar forte entra só pelo gradiente, subindo da borda
+       de baixo como o brilho radial do diferencial entra pelo canto. */
+    background-color: #fff6de;
+    background-image:
+      radial-gradient(1300px 700px at 50% 122%, #ffb800 0%, rgba(255, 184, 0, 0.45) 45%, rgba(255, 184, 0, 0) 75%),
+      linear-gradient(to bottom, #fffdf5 0%, #fff0c9 100%);
     color: #171717;
-  }
-
-  .footer-sketch {
-    background-color: rgba(124, 86, 32, 0.38);
-    -webkit-mask-image: url("/brand/comb-sketch.svg");
-    mask-image: url("/brand/comb-sketch.svg");
-    -webkit-mask-size: cover;
-    mask-size: cover;
-    -webkit-mask-position: center;
-    mask-position: center;
   }
 
   /* Cursor da máquina de escrever. */
