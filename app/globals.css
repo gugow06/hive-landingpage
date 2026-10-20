@@ -1,0 +1,357 @@
+@import "tailwindcss";
+
+/* O tema da Hive é escuro por natureza — a colmeia âmbar sobre #171717 é a
+   identidade da marca. O modo claro é a variante, não o contrário. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Paleta da marca (apresentação Hive — identidade visual) */
+  --color-amber: #ffb800;
+  --color-amber-bright: #ffcd4f;
+  --color-amber-deep: #e0a200;
+  --color-ink-900: #171717;
+  --color-ink-800: #262626;
+
+  --radius-pill: 600px;
+  --radius-card: 24px;
+  --radius-panel: 56px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --tracking-body: -0.02em;
+  --tracking-lead: -0.03em;
+  --tracking-title: -0.05em;
+}
+
+/* Tokens semânticos. Trocam no modo claro; todo componente consome estes.
+   Os valores de texto são escolhidos pelo contraste (WCAG 2.2 AA, 1.4.3):
+   #FFB800 puro só alcança 1.7:1 sobre branco, então no modo claro o âmbar de
+   texto escurece para um ocre. Como PREENCHIMENTO (botões, pontos) o âmbar
+   original continua, porque ali o contraste é com o #171717 por cima. */
+:root {
+  --bg: #ffffff;
+  --bg-weak: #f7f7f8;
+  --surface: #ffffff;
+  --surface-raised: #fbfbfc;
+  --ink: #171717; /* 16.8:1 */
+  --ink-soft: #52525b; /* 7.9:1 */
+  --ink-faint: #65656d; /* 5.7:1 */
+  /* O âmbar mais vivo que ainda passa no AA sobre branco. #FFB800 puro dá
+     1,7:1 e seria ilegível; estes são o teto de saturação em cada faixa. */
+  --accent: #9c6c00; /* 4.6:1 — texto miúdo */
+  --accent-display: #c87f00; /* 3.2:1 — títulos grandes, onde AA pede 3:1 */
+  --line: #e5e5e7;
+  --line-strong: #c9c9ce;
+  --field-border: #8a8a91; /* 3.4:1 — 1.4.11, contorno de campo */
+  --halo: rgba(255, 184, 0, 0.34);
+  --panel-bg: #fffaf0;
+  --panel-ink: #171717;
+  --panel-ink-soft: #5c4a1f; /* 4.9:1 sobre o painel claro */
+  --panel-accent: #8f6300; /* 5.1:1 — o painel é mais quente que o branco, o âmbar precisa descer um tom */
+  --panel-line: rgba(255, 184, 0, 0.45);
+  --panel-card: #ffffff;
+  --panel-card-line: rgba(23, 23, 23, 0.1);
+  --ring: inset 0 0 0 1px var(--line);
+  --shadow-card: 0 1px 2px rgba(23, 23, 23, 0.04), 0 8px 24px rgba(23, 23, 23, 0.06);
+  --shadow-float: 0 10px 40px rgba(23, 23, 23, 0.1);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #171717;
+  --bg-weak: #1c1c1c;
+  --surface: #262626;
+  --surface-raised: #2e2e2e;
+  --ink: #ffffff; /* 18.3:1 */
+  --ink-soft: #a1a1aa; /* 7.2:1 */
+  --ink-faint: #9b9ba3; /* 4.9:1 contra a superfície mais clara (#2e2e2e) */
+  --accent: #ffb800; /* 10.6:1 — no escuro o âmbar da marca já passa */
+  --accent-display: #ffb800;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.24);
+  --field-border: rgba(255, 255, 255, 0.4);
+  --halo: rgba(255, 184, 0, 0.3);
+  --panel-bg: #0f0f0f;
+  --panel-ink: #ffffff;
+  --panel-ink-soft: rgba(255, 255, 255, 0.7);
+  --panel-accent: #ffb800;
+  --panel-line: rgba(255, 184, 0, 0.18);
+  --panel-card: rgba(255, 255, 255, 0.05);
+  --panel-card-line: rgba(255, 255, 255, 0.12);
+  --ring: inset 0 0 0 1px var(--line);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-float: 0 10px 40px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-weak: var(--bg-weak);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-accent: var(--accent);
+  --color-accent-display: var(--accent-display);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-amber);
+    color: #171717;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  /* Container do AbacatePay adaptado: 1216px úteis dentro de 1440px. */
+  .shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 1440px;
+    padding-inline: 112px;
+  }
+
+  @media (width <= 1279px) {
+    .shell {
+      padding-inline: 48px;
+    }
+  }
+
+  @media (width <= 767px) {
+    .shell {
+      padding-inline: 20px;
+    }
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* Link de pular para o conteúdo (WCAG 2.4.1). Só aparece ao receber foco. */
+  .skip-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+    translate: 0 -200%;
+    background: var(--color-amber);
+    color: #171717;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: var(--radius-pill);
+    transition: translate 0.2s var(--ease-out);
+  }
+
+  .skip-link:focus-visible {
+    translate: 0 0;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: var(--tracking-title);
+    line-height: 1.05;
+  }
+
+  .lead {
+    font-size: 20px;
+    line-height: 30px;
+    letter-spacing: var(--tracking-lead);
+    color: var(--ink-soft);
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius-card);
+    box-shadow: var(--ring);
+  }
+
+  /* Botões: pílula de 48px, igual à base .btn do estudo do AbacatePay. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    padding-inline: 20px;
+    border-radius: var(--radius-pill);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: var(--tracking-body);
+    white-space: nowrap;
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      box-shadow 0.2s,
+      transform 0.2s;
+  }
+
+  .btn svg {
+    transition: translate 0.3s var(--ease-out);
+  }
+
+  .btn:hover svg {
+    translate: 4px;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-primary {
+    background: var(--color-amber);
+    color: #171717;
+  }
+
+  .btn-primary:hover {
+    background: var(--color-amber-bright);
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--field-border);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-weak);
+  }
+
+  .btn-ghost {
+    color: var(--ink-soft);
+    padding-inline: 16px;
+  }
+
+  .btn-ghost:hover {
+    color: var(--ink);
+    background: var(--bg-weak);
+  }
+
+  .btn-lg {
+    height: 56px;
+    padding-inline: 28px;
+    font-size: 18px;
+    letter-spacing: var(--tracking-lead);
+  }
+
+  /* Textura de colmeia: favo hexagonal da apresentação, em contorno âmbar.
+     O tile de 28×49 encaixa sozinho; a intensidade vem da opacidade de quem usa. */
+  .comb {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath fill='%23ffb800' fill-rule='evenodd' d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/svg%3E");
+    background-size: 84px 147px;
+  }
+
+  /* Painel do diferencial. Segue o tema: no claro é um bloco quente sobre
+     branco; no escuro afunda abaixo do fundo da página, senão some. */
+  .panel {
+    background: var(--panel-bg);
+    color: var(--panel-ink);
+    box-shadow: inset 0 0 0 1px var(--panel-line);
+  }
+
+  /* Rodapé: ouro da marca descendo para um amarelo claro, com o favo
+     manuscrito por cima. É bloco de marca, então não troca com o tema. */
+  .footer-gold {
+    background-color: #ffcc4d; /* base sólida: fallback do gradiente e cor de referência do contraste */
+    background-image: linear-gradient(160deg, #ffb800 0%, #ffcc4d 42%, #fff0c2 100%);
+    color: #171717;
+  }
+
+  .footer-sketch {
+    background-color: rgba(124, 86, 32, 0.38);
+    -webkit-mask-image: url("/brand/comb-sketch.svg");
+    mask-image: url("/brand/comb-sketch.svg");
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+
+  /* Cursor da máquina de escrever. */
+  .caret {
+    display: inline-block;
+    width: 0.06em;
+    height: 0.85em;
+    margin-left: 0.06em;
+    translate: 0 0.08em;
+    background: var(--color-amber);
+    animation: caret 1s steps(1) infinite;
+  }
+
+  @keyframes caret {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .caret {
+      display: none;
+    }
+  }
+
+  /* Flutuação sutil dos Hibees parados, para a colmeia não ficar estática. */
+  .bob {
+    animation: bob 4.5s ease-in-out infinite;
+  }
+
+  @keyframes bob {
+    50% {
+      translate: 0 -6px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bob {
+      animation: none;
+    }
+  }
+
+  /* Alvo mínimo de 24×24 px (WCAG 2.2, 2.5.8) para links que não são
+     texto corrido — os da navegação e do rodapé. */
+  .tap {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding-block: 6px;
+  }
+}

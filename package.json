@@ -1,0 +1,33 @@
+{
+  "name": "hive-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "hibees": "node scripts/generate-hibees.mjs",
+    "sync:cliplab": "node scripts/sync-cliplab.mjs",
+    "sync:brand": "node scripts/sync-brand.mjs",
+    "comb": "node scripts/generate-comb-sketch.mjs"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.27",
+    "lucide-react": "^1.59.0",
+    "next": "15.5.28",
+    "next-themes": "^0.4.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.185.4",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.6.0"
+  }
+}
