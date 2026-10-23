@@ -17,8 +17,8 @@ const links: ({ id: string; label: string } | { page: string; label: string })[]
   { id: "produto", label: "Produto" },
   { id: "como-funciona", label: "Como funciona" },
   { id: "integracoes", label: "Integrações" },
-  { id: "faq", label: "FAQ" },
   { id: "comunidade", label: "Comunidade" },
+  { id: "faq", label: "FAQ" },
 ];
 
 /**

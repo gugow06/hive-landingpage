@@ -30,9 +30,10 @@ export default function Home() {
         <Memory />
         <Audit />
         <Connectors />
-        <Faq />
-        {/* Prova social e comunidade fecham a página, logo antes do rodapé. */}
+        {/* Prova social e comunidade vêm antes das dúvidas: o visitante vê que outras equipes
+            usam, e o FAQ fecha as últimas objeções logo antes do rodapé. */}
         <Community />
+        <Faq />
       </main>
       <Footer />
     </>

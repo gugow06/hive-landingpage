@@ -1,23 +1,9 @@
-import { Star } from "lucide-react";
 import { CUSTOMERS, TESTIMONIALS } from "@/lib/social-proof";
 import { BrandIcon } from "./brand-icons";
 import { GithubMark, REPO } from "./github";
 import { Rise, SectionHead } from "./primitives";
+import { TestimonialsMarquee } from "./ui/testimonials-marquee";
 import { WHATSAPP_URL } from "./whatsapp-button";
-
-function Stars({ rating }: { rating: number }) {
-  return (
-    <span className="flex gap-0.5" role="img" aria-label={`${rating} de 5 estrelas`}>
-      {Array.from({ length: 5 }, (_, index) => (
-        <Star
-          key={index}
-          aria-hidden="true"
-          className={`size-4 ${index < rating ? "fill-amber text-amber" : "text-line-strong"}`}
-        />
-      ))}
-    </span>
-  );
-}
 
 /**
  * Prova social e comunidade. É a última seção antes do rodapé.
@@ -38,39 +24,24 @@ export function Community() {
             id="comunidade-titulo"
             center
             title="Quem está construindo com o Hive"
-            lead="O Hive é novo e a comunidade está começando. Os primeiros relatos de quem usa entram aqui."
+            lead={
+              hasProof
+                ? "Relatos de quem já montou a sua equipe de agentes."
+                : "O Hive é novo e a comunidade está começando. Os primeiros relatos de quem usa entram aqui."
+            }
           />
         </Rise>
+      </div>
 
-        {hasProof ? (
-          <Rise as="ul" stagger="li" delay={80} className="mt-14 grid gap-6 md:grid-cols-3">
-            {TESTIMONIALS.map((person) => (
-              <li key={`${person.name}-${person.company}`} className="card flex flex-col gap-5 p-8">
-                <Stars rating={person.rating} />
-                <blockquote className="flex-1 text-ink">“{person.quote}”</blockquote>
-                <figcaption className="flex items-center gap-3">
-                  {person.avatar && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={`/social/${person.avatar}`}
-                      alt=""
-                      width={40}
-                      height={40}
-                      className="size-10 rounded-full object-cover"
-                    />
-                  )}
-                  <span>
-                    <span className="block text-sm font-semibold text-ink">{person.name}</span>
-                    <span className="block text-sm text-ink-soft">
-                      {person.role} · {person.company}
-                    </span>
-                  </span>
-                </figcaption>
-              </li>
-            ))}
-          </Rise>
-        ) : (
-          <Rise className="card mx-auto mt-12 max-w-3xl px-6 py-10 sm:px-10">
+      {hasProof ? (
+        <Rise className="mt-14">
+          <TestimonialsMarquee items={TESTIMONIALS} label="Depoimentos de quem usa o Hive" />
+        </Rise>
+      ) : null}
+
+      <div className="shell">
+        {(
+          <Rise className={`card mx-auto max-w-3xl px-6 py-10 sm:px-10 ${hasProof ? "mt-14" : "mt-12"}`}>
             <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
               <div className="max-w-md">
                 <h3 className="font-display text-xl font-semibold tracking-[-0.02em] text-ink">
