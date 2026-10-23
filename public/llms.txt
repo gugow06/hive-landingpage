@@ -4,7 +4,7 @@
 
 ## Para começar
 
-- [Como instalar o Hive](https://hiveagents.com.br/install): guia passo a passo para Windows, macOS e Linux, com npm ou Docker, e os primeiros passos.
+- [Como instalar o Hive](https://hiveagents.com.br/install): guia passo a passo para Windows, macOS e Linux, com instalação local ou Docker, e os primeiros passos.
 - [Perguntas frequentes](https://hiveagents.com.br/#faq): custo, memória, controle dos agentes e privacidade.
 
 ## O produto

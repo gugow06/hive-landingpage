@@ -238,15 +238,14 @@ fica nada invisível.
 ## Página de instalação (`/install`)
 
 `app/install/page.tsx` + `components/install/`. Guia técnico, em português,
-para Windows, macOS e Linux: requisitos, instalação local (pelo pacote
-`hive-agents`, com `pnpm add -g` como método principal e o npm como alternativa; o
-código-fonte fica como opção para quem quer contribuir), Docker, primeiros passos,
-manutenção e problemas comuns. A rota antiga `/instalacao` redireciona (308)
-para `/install` (`next.config.mjs`).
+para Windows, macOS e Linux: requisitos, instalação local (pelo código-fonte: `git clone`,
+`pnpm install`, `pnpm dev`), Docker, primeiros passos, manutenção e problemas comuns.
+Por enquanto o Hive só se instala pelo código-fonte: o pacote npm `hive-agents` ainda não
+existe, então a página não deve citá-lo até ele ser publicado. A rota antiga `/instalacao`
+redireciona (308) para `/install` (`next.config.mjs`).
 
-O Windows roda direto no PowerShell: o WSL2 é opcional, e o FAQ da página explica
-quando vale a pena. Os comandos de `npm` no Windows usam `npm.cmd`, porque o
-PowerShell padrão bloqueia o `npm.ps1`.
+O Windows roda direto no PowerShell: o WSL2 é opcional, e o FAQ da página explica quando
+vale a pena.
 
 - **Abas de sistema** (`os-tabs.tsx`): detectam o sistema pelo navegador e a
   escolha vale para a página inteira (e pela sessão). Teclado: setas, Home e End.

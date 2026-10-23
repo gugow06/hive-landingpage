@@ -101,7 +101,7 @@ export function installArticleLd(): Json {
     "@id": `${SITE_URL}/install#artigo`,
     headline: "Como instalar o Hive no Windows, macOS e Linux",
     description:
-      "Guia passo a passo para instalar o Hive no Windows, no macOS ou no Linux, com npm ou Docker, e dar os primeiros passos.",
+      "Guia passo a passo para instalar o Hive no Windows, no macOS ou no Linux, com instalação local ou Docker, e dar os primeiros passos.",
     inLanguage: "pt-BR",
     url: url("/install"),
     dateModified: LEGAL.atualizadoIso,
