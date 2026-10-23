@@ -17,14 +17,14 @@ import { breadcrumbLd, graph, installArticleLd, organizationLd, softwareLd, webs
 export const metadata: Metadata = {
   title: "Como instalar o Hive no Windows, macOS e Linux",
   description:
-    "Guia para instalar o Hive no Windows, macOS ou Linux, com npm ou Docker, e dar os primeiros passos com Claude Code, Codex e Gemini.",
+    "Guia para instalar o Hive no Windows, macOS ou Linux, com instalação local ou Docker, e dar os primeiros passos com Claude Code, Codex e Gemini.",
   alternates: { canonical: "/install" },
   openGraph: {
     type: "article",
     url: "/install",
     title: "Como instalar o Hive no Windows, macOS e Linux",
     description:
-      "Passo a passo para instalar o Hive no Windows, macOS ou Linux, com npm ou Docker.",
+      "Passo a passo para instalar o Hive no Windows, macOS ou Linux, com instalação local ou Docker.",
   },
 };
 
@@ -117,8 +117,8 @@ export default function InstallPage() {
                     <ul className={`${body} list-disc space-y-1.5 pl-5 marker:text-ink-faint`}>
                       <li>Node.js 24.11 ou superior</li>
                       <li>Windows, macOS ou Linux. No Windows, direto no PowerShell: o WSL2 é opcional</li>
-                      <li>pnpm 9 ou superior (o Corepack, que vem com o Node, ativa). O npm também serve</li>
-                      <li>Git, só se for instalar pelo código-fonte</li>
+                      <li>pnpm 9 ou superior (o Corepack, que vem com o Node, ativa)</li>
+                      <li>Git</li>
                     </ul>
                   </div>
                   <div className="space-y-3">
@@ -204,38 +204,26 @@ export default function InstallPage() {
                       O <C>node --version</C> deve mostrar <C>v24.11</C> ou mais recente.
                     </p>
                   </Step>
-                  <Step n={2} title="Prepare o pnpm">
-                    <p className={body}>O Node traz o Corepack, que ativa o pnpm. Depois, o <C>pnpm setup</C> cria a pasta dos programas globais:</p>
-                    <OsTabs
-                      panels={{
-                        windows: <CodeBlock label="PowerShell" prompt="PS>" code={`corepack enable pnpm
-pnpm setup`} />,
-                        macos: <CodeBlock label="Terminal" code={`corepack enable pnpm
-pnpm setup`} />,
-                        linux: <CodeBlock label="Terminal" code={`corepack enable pnpm
-pnpm setup`} />,
-                      }}
-                    />
+                  <Step n={2} title="Habilite o pnpm">
+                    <p className={body}>O Node traz o Corepack, que instala a versão certa do pnpm para o projeto.</p>
+                    <CodeBlock code={`corepack enable
+pnpm --version`} />
                     <p className={body}>
-                      Feche e abra o terminal, para o novo PATH valer. Se o <C>corepack enable</C> acusar falta de
-                      permissão (comum no Windows), instale o pnpm pelo npm: <C>npm.cmd install -g pnpm</C> no
-                      PowerShell, ou <C>npm install -g pnpm</C> nos outros sistemas.
+                      Se o <C>corepack enable</C> acusar falta de permissão (comum no Windows), instale o pnpm pelo npm:{" "}
+                      <C>npm.cmd install -g pnpm</C> no PowerShell, ou <C>npm install -g pnpm</C> nos outros sistemas.
                     </p>
                   </Step>
-                  <Step n={3} title="Instale o Hive">
-                    <CodeBlock code="pnpm add -g hive-agents" />
-                    <p className={body}>
-                      No pnpm 10 aparece o aviso “Ignored build scripts”. Pode ignorar: o Hive prepara o que precisa na
-                      primeira execução. Prefere o npm? Use <C>npm install -g hive-agents</C> (no PowerShell,{" "}
-                      <C>npm.cmd</C>).
-                    </p>
+                  <Step n={3} title="Baixe o código e instale as dependências">
+                    <CodeBlock code={`git clone ${CLONE_URL}
+cd hive
+pnpm install`} />
+                    <p className={body}>Na primeira vez, a instalação leva alguns minutos.</p>
                   </Step>
                   <Step n={4} title="Inicie o Hive" last>
-                    <CodeBlock code="hive onboard --yes" />
+                    <CodeBlock code="pnpm dev" />
                     <p className={body}>
-                      Esse comando cria a configuração inicial e já inicia o Hive. Quando o endereço aparecer no
-                      terminal, abra <C>http://localhost:3100</C> no navegador. No modo local o Hive não pede login.
-                      Nas próximas vezes, inicie com <C>hive run</C>.
+                      Quando o endereço aparecer no terminal, abra <C>http://localhost:3100</C> no navegador. No modo
+                      local o Hive não pede login.
                     </p>
                     <Callout kind="nota" title="Telemetria de uso">
                       <p>
@@ -245,21 +233,6 @@ pnpm setup`} />,
                     </Callout>
                   </Step>
                 </Steps>
-                <div className="space-y-3 border-t border-line pt-6">
-                  <h3 className={h3}>Pelo código-fonte</h3>
-                  <p className={body}>
-                    Para contribuir com o Hive ou testar uma alteração, rode direto do repositório. Precisa do Git e do
-                    Node.js 24.11 ou superior:
-                  </p>
-                  <CodeBlock code={`corepack enable
-git clone ${CLONE_URL}
-cd hive
-pnpm install
-pnpm dev`} />
-                  <p className={body}>
-                    O endereço é o mesmo, <C>http://localhost:3100</C>. A primeira instalação leva alguns minutos.
-                  </p>
-                </div>
               </section>
 
               {/* ------------------------------------------------ docker */}
@@ -392,14 +365,12 @@ pnpm dev`} />
                 <div className="grid gap-8 sm:grid-cols-2">
                   <div className="min-w-0 space-y-3">
                     <h3 className={h3}>Instalação local</h3>
-                    <p className={body}>Para atualizar para a versão mais recente:</p>
-                    <CodeBlock code="pnpm add -g hive-agents@latest" />
+                    <p className={body}>Para atualizar, dentro da pasta do projeto:</p>
+                    <CodeBlock code={`git pull
+pnpm install`} />
                     <p className={body}>
-                      Para parar, pressione <C>Ctrl+C</C> no terminal. Para desinstalar, use{" "}
-                      <C>pnpm remove -g hive-agents</C>. Se instalou pelo npm, troque <C>pnpm add -g</C> por{" "}
-                      <C>npm install -g</C>, e <C>pnpm remove -g</C> por <C>npm uninstall -g</C>. Seus dados ficam na
-                      pasta <C>.paperclip</C>, dentro da sua pasta de usuário, e continuam lá até você apagá-la. Se
-                      instalou pelo código-fonte, atualize com <C>git pull</C> e <C>pnpm install</C>.
+                      Para parar, pressione <C>Ctrl+C</C> no terminal. Seus dados ficam na pasta <C>.paperclip</C>,
+                      dentro da sua pasta de usuário, e continuam lá até você apagá-la.
                     </p>
                   </div>
                   <div className="min-w-0 space-y-3">
