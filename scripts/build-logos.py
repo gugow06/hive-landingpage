@@ -6,7 +6,9 @@ Os originais do Canva vêm em 2000x2000 com muita margem transparente: sem
 recortar, a logo fica minuscula dentro da propria caixa. Gera:
 
   public/brand/hive-wordmark.png  — o lettering da navbar
-  app/icon.png                    — o icone da aba
+  public/brand/hive-symbol-trim.png — o simbolo recortado (hub das integracoes)
+  app/icon.svg                    — o favicon (images/logo-hive-favicon.svg,
+                                    com o viewBox recortado no logo)
   public/brand/parceiros/*.png    — logos de parceiros, recortados
 
 Requer Pillow (`pip install pillow`).
@@ -14,7 +16,9 @@ Requer Pillow (`pip install pillow`).
 
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+import re
+
+from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 IMAGES = HERE.parent / "images"
@@ -36,17 +40,22 @@ def main() -> None:
     wordmark.save(BRAND / "hive-wordmark.png", optimize=True)
     print("public/brand/hive-wordmark.png", wordmark.size)
 
-    # Icone da aba: simbolo centrado num quadrado escuro arredondado.
+    # Simbolo recortado: o hub das integracoes usa o logo oficial, nao um redesenho.
     symbol = trimmed(IMAGES / "Logo2 Hive Fundo transparente.png")
-    size, inner = 512, 300
-    scale = inner / max(symbol.size)
-    symbol = symbol.resize((round(symbol.width * scale), round(symbol.height * scale)), Image.LANCZOS)
+    symbol.save(BRAND / "hive-symbol-trim.png", optimize=True)
+    print("public/brand/hive-symbol-trim.png", symbol.size)
 
-    icon = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    ImageDraw.Draw(icon).rounded_rectangle((0, 0, size - 1, size - 1), radius=112, fill=(23, 23, 23, 255))
-    icon.paste(symbol, ((size - symbol.width) // 2, (size - symbol.height) // 2), symbol)
-    icon.save(APP / "icon.png", optimize=True)
-    print("app/icon.png", icon.size)
+    # Favicon: o SVG oficial tem o logo pequeno no meio de um canvas de
+    # 2000x2000; recortar o viewBox no logo o deixa legivel em 16px. O
+    # simbolo de entrada e um unico <path>, entao os limites saem dos numeros.
+    source = (IMAGES / "logo-hive-favicon.svg").read_text(encoding="utf-8")
+    points = [(float(x), float(y)) for x, y in re.findall(r"[ML] (\d+(?:\.\d+)?) (\d+(?:\.\d+)?)", source)]
+    xs, ys = [x for x, _ in points], [y for _, y in points]
+    side = max(max(xs) - min(xs), max(ys) - min(ys)) * 1.04
+    left, top = (min(xs) + max(xs) - side) / 2, (min(ys) + max(ys) - side) / 2
+    icon = re.sub(r'width="\d+" height="\d+" viewBox="[^"]+"', f'width="512" height="512" viewBox="{left:.0f} {top:.0f} {side:.0f} {side:.0f}"', source, count=1)
+    (APP / "icon.svg").write_text(icon, encoding="utf-8")
+    print("app/icon.svg", f"viewBox {left:.0f} {top:.0f} {side:.0f} {side:.0f}")
 
     # Logos de parceiros: mesma margem vazia dos originais, mesmo recorte.
     partners_in = IMAGES / "parceiros"

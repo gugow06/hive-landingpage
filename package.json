@@ -6,8 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "hibees": "node scripts/generate-hibees.mjs",
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "hibees": "node scripts/generate-hibees.mjs && node scripts/animate-hibees.mjs",
     "sync:cliplab": "node scripts/sync-cliplab.mjs",
+    "build:og": "node scripts/build-og-image.mjs",
     "sync:brand": "node scripts/sync-brand.mjs",
     "connectors": "node scripts/sync-connectors.mjs"
   },

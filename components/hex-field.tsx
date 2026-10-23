@@ -133,14 +133,15 @@ export function HexField({ className = "" }: { className?: string }) {
       context!.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       nodes = lattice(width, height, RADIUS);
-      const count = Math.max(3, Math.min(7, Math.round(width / 260)));
+      // Poucas partículas: o fundo acompanha, quem conduz o olhar é o vídeo.
+      const count = Math.max(2, Math.min(4, Math.round(width / 420)));
       particles = Array.from({ length: count }, () => {
         const from = Math.floor(Math.random() * nodes.length);
         return {
           from,
           to: pick(nodes[from]!, -1),
           t: Math.random(),
-          speed: 0.014 + Math.random() * 0.01,
+          speed: 0.01 + Math.random() * 0.008,
           trail: [],
         };
       });
@@ -215,7 +216,7 @@ export function HexField({ className = "" }: { className?: string }) {
         const y = a.y + (b.y - a.y) * particle.t;
 
         particle.trail.push({ x, y });
-        if (particle.trail.length > 130) particle.trail.shift();
+        if (particle.trail.length > 90) particle.trail.shift();
 
         // A cauda desenha segmento a segmento, cada um mais apagado e mais
         // fino que o seguinte — um gradiente ao longo do caminho, que um
@@ -228,19 +229,19 @@ export function HexField({ className = "" }: { className?: string }) {
           // Quadrática: a ponta da cauda apaga rápido e a cabeça concentra o
           // brilho; linear deixaria um rastro uniforme, sem direção.
           const fade = (i / particle.trail.length) ** 2;
-          context!.strokeStyle = `rgba(255,184,0,${(fade * 0.65).toFixed(3)})`;
-          context!.lineWidth = 0.4 + fade * 2.6;
+          context!.strokeStyle = `rgba(255,184,0,${(fade * 0.4).toFixed(3)})`;
+          context!.lineWidth = 0.4 + fade * 1.6;
           context!.beginPath();
           context!.moveTo(previous.x, previous.y);
           context!.lineTo(point.x, point.y);
           context!.stroke();
         }
 
-        context!.fillStyle = "rgba(255,184,0,0.95)";
-        context!.shadowColor = "rgba(255,184,0,0.9)";
-        context!.shadowBlur = 12;
+        context!.fillStyle = "rgba(255,184,0,0.75)";
+        context!.shadowColor = "rgba(255,184,0,0.6)";
+        context!.shadowBlur = 6;
         context!.beginPath();
-        context!.arc(x, y, 2.1, 0, Math.PI * 2);
+        context!.arc(x, y, 1.8, 0, Math.PI * 2);
         context!.fill();
         context!.shadowBlur = 0;
       }

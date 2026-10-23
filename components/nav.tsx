@@ -1,47 +1,65 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useTheme } from "next-themes";
-import { Menu, Moon, Sun, X } from "lucide-react";
-import { GithubMark, REPO } from "./github";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
 import { HiveLogo } from "./primitives";
+import { FlowButton } from "./ui/flow-button";
+import { WhatsAppButton } from "./whatsapp-button";
 
-const links = [
-  { href: "#agentes", label: "Os Hibees" },
-  { href: "#beneficios", label: "Por que" },
-  { href: "#memoria", label: "Memória" },
-  { href: "#conexoes", label: "Conexões" },
-  { href: "#diferencial", label: "Diferencial" },
-  { href: "#faq", label: "FAQ" },
+/**
+ * `id` aponta para uma seção da página inicial; `page` para uma página própria.
+ * Dentro da página inicial a âncora é só `#id` (o SmoothScroll rola sem mexer
+ * na URL); em qualquer outra página vira `/#id`, que leva de volta à inicial.
+ */
+const links: ({ id: string; label: string } | { page: string; label: string })[] = [
+  { id: "produto", label: "Produto" },
+  { id: "como-funciona", label: "Como funciona" },
+  { id: "integracoes", label: "Integrações" },
+  { id: "faq", label: "FAQ" },
+  { id: "comunidade", label: "Comunidade" },
 ];
 
-function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  const dark = resolvedTheme === "dark";
-
-  return (
-    <button
-      type="button"
-      onClick={() => setTheme(dark ? "light" : "dark")}
-      // Antes da hidratação não sabemos o tema; o ícone fica neutro mas o botão
-      // já ocupa o lugar certo, então o header não pula.
-      aria-label={mounted ? (dark ? "Ativar modo claro" : "Ativar modo escuro") : "Alternar tema"}
-      aria-pressed={mounted ? dark : undefined}
-      className="inline-flex size-11 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-surface hover:text-ink"
-    >
-      {mounted && dark ? (
-        <Sun className="size-5" aria-hidden="true" />
-      ) : (
-        <Moon className="size-5" aria-hidden="true" />
-      )}
-    </button>
+/**
+ * Páginas próprias usam o `Link` do Next (navegação sem recarregar). Âncoras
+ * (`#id` ou `/#id`) ficam como `<a>` comum: o `Link` chama `preventDefault` e o
+ * SmoothScroll, que rola sem escrever o `#` na URL, passaria a ignorar o clique.
+ */
+function NavLink({
+  href,
+  page,
+  current,
+  className,
+  onClick,
+  children,
+}: {
+  href: string;
+  page: boolean;
+  current: boolean;
+  className: string;
+  onClick?: () => void;
+  children: React.ReactNode;
+}) {
+  const props = { className, onClick, "aria-current": current ? ("page" as const) : undefined };
+  return page ? (
+    <Link href={href} {...props}>
+      {children}
+    </Link>
+  ) : (
+    <a href={href} {...props}>
+      {children}
+    </a>
   );
 }
 
 export function Nav() {
+  const pathname = usePathname();
+  const home = pathname === "/";
+  // O botão principal leva à instalação; já na página de instalação, ao começo do passo a passo.
+  const installHref = pathname.startsWith("/install") ? "#local" : "/install";
+  const hrefOf = (link: (typeof links)[number]) => ("page" in link ? link.page : home ? `#${link.id}` : `/#${link.id}`);
+  const isCurrent = (link: (typeof links)[number]) => "page" in link && pathname.startsWith(link.page);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -72,46 +90,46 @@ export function Nav() {
   }, [open]);
 
   return (
-    // Navbar do AbacatePay: coluna estreita de ~1018px centrada, fundo
-    // translúcido sobre o halo do herói, links no meio e ações à direita.
+    // Coluna estreita centrada, links no meio (centralizados de verdade, numa grade de três colunas) e ações à direita. Ao rolar ganha
+    // fundo quase sólido e borda — sem vidro: o texto que passa por baixo não
+    // pode competir com os links.
     <header className="sticky top-0 z-50">
       <div
-        className={`transition-colors duration-300 ${
-          scrolled ? "border-b border-line bg-bg/70 backdrop-blur-xl" : "border-b border-transparent"
+        // No topo a barra é transparente e herda o fundo da página — no tema
+        // escuro, o mesmo cinza da faixa do herói, sem emenda; ao rolar ganha
+        // vidro (90–93% opaco) e borda de luz.
+        className={`border-b transition-colors duration-300 ${
+          scrolled || open ? "glass border-transparent" : "border-transparent"
         }`}
       >
         <nav
           aria-label="Principal"
-          className="mx-auto flex h-[88px] w-full max-w-[1018px] items-center justify-between px-6"
+          className="mx-auto grid h-[72px] w-full max-w-[1120px] grid-cols-[1fr_auto] items-center gap-4 px-5 sm:px-6 lg:grid-cols-[1fr_auto_1fr]"
         >
-          <a href="#topo" className="shrink-0" aria-label="Hive, início">
+          <a href={home ? "#topo" : "/"} className="shrink-0 justify-self-start" aria-label="Hive, início">
             <HiveLogo />
           </a>
 
           <ul className="hidden items-center gap-8 lg:flex">
             {links.map((link) => (
-              <li key={link.href}>
-                <a href={link.href} className="tap text-sm text-ink-soft transition-colors hover:text-ink">
+              <li key={hrefOf(link)}>
+                <NavLink
+                  href={hrefOf(link)}
+                  page={"page" in link}
+                  current={isCurrent(link)}
+                  className="tap rounded-md text-[15px] font-medium text-ink-soft transition-colors hover:text-ink aria-[current=page]:text-ink"
+                >
                   {link.label}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>
 
-          <div className="flex items-center gap-1 sm:gap-2">
-            <a
-              href={REPO}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Repositório do Hive no GitHub"
-              className="inline-flex size-11 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-surface hover:text-ink"
-            >
-              <GithubMark className="size-5" />
-            </a>
-            <ThemeToggle />
-            <a href="#lista" className="btn btn-primary hidden sm:inline-flex">
-              Entrar na lista
-            </a>
+          <div className="flex items-center justify-self-end gap-2">
+            <WhatsAppButton />
+            <FlowButton href={installHref} className="hidden sm:flex">
+              Instalar
+            </FlowButton>
             <button
               ref={toggleRef}
               type="button"
@@ -130,24 +148,26 @@ export function Nav() {
       <div
         id="menu-mobile"
         hidden={!open}
-        className="fixed inset-x-0 top-[88px] bottom-0 z-40 border-t border-line bg-bg lg:hidden"
+        className="fixed inset-x-0 top-[72px] bottom-0 z-40 overflow-y-auto glass lg:hidden"
       >
         <ul className="shell flex flex-col gap-1 py-6">
           {links.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
+            <li key={hrefOf(link)}>
+              <NavLink
+                href={hrefOf(link)}
+                page={"page" in link}
+                current={isCurrent(link)}
                 onClick={() => setOpen(false)}
-                className="block rounded-2xl px-4 py-4 font-display text-2xl font-semibold tracking-tight text-ink transition-colors hover:bg-surface"
+                className="block rounded-xl px-4 py-3.5 font-display text-xl font-semibold tracking-tight text-ink transition-colors hover:bg-bg-weak aria-[current=page]:text-accent"
               >
                 {link.label}
-              </a>
+              </NavLink>
             </li>
           ))}
           <li className="mt-4 px-4">
-            <a href="#lista" onClick={() => setOpen(false)} className="btn btn-primary w-full">
-              Entrar na lista
-            </a>
+            <FlowButton href={installHref} className="w-full justify-center" onClick={() => setOpen(false)}>
+              Instalar
+            </FlowButton>
           </li>
         </ul>
       </div>

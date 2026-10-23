@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
+import { CookieNotice } from "@/components/cookie-notice";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -15,35 +17,43 @@ const inter = Inter({
   display: "swap",
 });
 
+const TITLE = "Hive: equipe de agentes de IA com memória e auditoria";
 const description =
-  "O Hive conecta um time hierárquico de agentes de IA a uma memória integrada — o segundo cérebro da empresa. Os agentes agem com base no que já foi decidido. Você mantém o controle total.";
+  "Organize agentes de IA numa equipe, com hierarquia, memória compartilhada e auditoria. Gratuito, de código aberto, para Windows, macOS e Linux.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hive.dev.br"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Hive — O time de IA da sua empresa, ordenado e sob controle",
+    default: TITLE,
     template: "%s · Hive",
   },
   description,
+  applicationName: "Hive",
   keywords: [
     "agentes de IA",
-    "orquestração de agentes",
-    "memória de IA",
+    "equipe de agentes de IA",
+    "orquestração de agentes de IA",
+    "memória compartilhada para IA",
     "grafo de conhecimento",
-    "governança de IA",
-    "indie hacker",
-    "solopreneur",
+    "auditoria de agentes",
+    "Claude Code",
+    "Codex",
+    "Gemini CLI",
+    "código aberto",
   ],
+  alternates: { canonical: "/" },
+  robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     locale: "pt_BR",
     siteName: "Hive",
-    title: "Hive — O time de IA da sua empresa, ordenado e sob controle",
+    url: "/",
+    title: TITLE,
     description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hive — O time de IA da sua empresa",
+    title: TITLE,
     description,
   },
 };
@@ -51,7 +61,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#171717" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
 };
 
@@ -59,7 +69,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" suppressHydrationWarning className={`${montserrat.variable} ${inter.variable}`}>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          <CookieNotice />
+        </ThemeProvider>
       </body>
     </html>
   );

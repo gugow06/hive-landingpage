@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-10-22T17:07:30.383Z",
+        "reason": "Fonte de interface da identidade visual da marca (Montserrat display + Inter)"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "http://localhost:**"
+        ],
+        "createdAt": "2026-10-22T23:01:32.582Z",
+        "reason": "Halo do botão shiny (componente do 21st.dev): o brilho âmbar no hover/foco é a assinatura do botão pedido"
+      }
+    ]
+  }
+}

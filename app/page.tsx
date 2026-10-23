@@ -1,16 +1,21 @@
+import { JsonLd } from "@/components/json-ld";
 import { Nav } from "@/components/nav";
 import { Hero } from "@/components/hero";
-import { Agents } from "@/components/agents";
-import { Benefits } from "@/components/benefits";
+import { Workflow } from "@/components/workflow";
+import { Team } from "@/components/team";
+import { Memory } from "@/components/memory";
+import { Audit } from "@/components/audit";
 import { Connectors } from "@/components/connectors";
-import { Customers, SocialProof } from "@/components/social-proof";
-import { Audience, Differential, Faq, Footer, HowItWorks, Memory, Problem } from "@/components/sections";
+import { Community } from "@/components/community";
+import { Faq } from "@/components/sections";
+import { Footer } from "@/components/footer";
 import { SmoothScroll } from "@/components/smooth-scroll";
-import { Waitlist } from "@/components/waitlist";
+import { faqLd, graph, organizationLd, softwareLd, websiteLd } from "@/lib/seo";
 
 export default function Home() {
   return (
     <>
+      <JsonLd data={graph(organizationLd(), websiteLd(), softwareLd(), faqLd())} />
       <SmoothScroll />
       <a href="#conteudo" className="skip-link">
         Pular para o conteúdo
@@ -18,21 +23,16 @@ export default function Home() {
       <Nav />
       <main id="conteudo" tabIndex={-1}>
         <Hero />
-        {/* Logo abaixo do herói: confirma a promessa antes de a pessoa rolar. */}
-        <Customers />
-        <Agents />
-        <Benefits />
-        <Problem />
-        <HowItWorks />
+        {/* Equipe e execução vêm antes do fluxo: primeiro a pessoa vê quem faz o
+            trabalho, depois por onde ele passa. É também a ordem do menu. */}
+        <Team />
+        <Workflow />
         <Memory />
+        <Audit />
         <Connectors />
-        <Differential />
-        {/* Depois dos diferenciais e antes do público: quem já provou, então
-            para quem é. */}
-        <SocialProof />
-        <Audience />
         <Faq />
-        <Waitlist />
+        {/* Prova social e comunidade fecham a página, logo antes do rodapé. */}
+        <Community />
       </main>
       <Footer />
     </>

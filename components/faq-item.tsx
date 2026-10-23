@@ -11,7 +11,7 @@ import { prefersReducedMotion } from "@/lib/motion";
  * sozinho: ao fechar, seguramos o `open` até a animação terminar, senão o
  * conteúdo sumiria antes de encolher.
  */
-export function FaqItem({ question, answer }: { question: string; answer: string }) {
+export function FaqItem({ question, answer }: { question: string; answer: React.ReactNode }) {
   const details = useRef<HTMLDetailsElement>(null);
   const body = useRef<HTMLDivElement>(null);
   const animating = useRef(false);
@@ -62,7 +62,12 @@ export function FaqItem({ question, answer }: { question: string; answer: string
         </span>
       </summary>
       <div ref={body} className="overflow-hidden">
-        <p className="mt-4 text-ink-soft">{answer}</p>
+        {/* Texto simples vira parágrafo; conteúdo rico (código, listas) vem pronto. */}
+        {typeof answer === "string" ? (
+          <p className="mt-4 max-w-[60ch] text-ink-soft">{answer}</p>
+        ) : (
+          <div className="mt-4 max-w-[60ch] space-y-3 text-ink-soft">{answer}</div>
+        )}
       </div>
     </details>
   );

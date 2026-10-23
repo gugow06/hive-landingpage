@@ -20,7 +20,7 @@ function Avatar({ hibee, status }: { hibee: string; status: string }) {
         />
       </span>
       <span
-        className="absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-[var(--surface-raised)]"
+        className={`absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-[var(--surface-raised)] ${status === "running" ? "pulse-dot" : ""}`}
         style={{ backgroundColor: STATUS_DOT[status] }}
       />
       <span className="sr-only">{STATUS_LABEL[status] ?? status}</span>
@@ -36,12 +36,12 @@ function CardBody({ node }: { node: Omit<OrgNode, "reports"> }) {
         <span className="min-w-0 flex-1">
           <span className="block text-sm leading-tight font-semibold text-ink">{node.name}</span>
           <span className="mt-0.5 block text-xs leading-tight text-ink-soft">{node.title}</span>
-          <span className="mt-1 block font-mono text-[11px] leading-tight text-ink-faint">
+          <span className="mt-1 block font-mono text-xs leading-tight text-ink-faint">
             {node.adapter}
           </span>
         </span>
       </div>
-      <p className="mt-1.5 text-[11px] leading-snug text-ink-soft">{node.capabilities}</p>
+      <p className="mt-1.5 text-xs leading-snug text-ink-soft">{node.capabilities}</p>
     </>
   );
 }
@@ -130,6 +130,10 @@ export function OrgChart() {
               0.25 + index * 0.08,
             );
           });
+
+          // Com o desenho pronto, um pulso desce por cada ligação: a tarefa
+          // indo de quem coordena para quem executa. É CSS, pausa fora da tela.
+          timeline.to("[data-org-pulse]", { opacity: 1, duration: 0.6, ease: "none" }, ">");
         }, scope);
 
         kill = () => context.revert();
@@ -172,15 +176,21 @@ export function OrgChart() {
               const x2 = child.x + CARD_W / 2;
               const y2 = child.y;
               const midY = (y1 + y2) / 2;
+              const d = `M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}`;
               return (
-                <path
-                  key={`${parent.id}-${child.id}`}
-                  data-org-link
-                  d={`M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}`}
-                  fill="none"
-                  stroke="var(--line-strong)"
-                  strokeWidth={1.5}
-                />
+                <g key={`${parent.id}-${child.id}`}>
+                  <path data-org-link d={d} fill="none" stroke="var(--line-strong)" strokeWidth={1.5} />
+                  <path
+                    data-org-pulse
+                    d={d}
+                    fill="none"
+                    stroke="var(--color-amber)"
+                    strokeWidth={2.5}
+                    strokeLinecap="round"
+                    className="beam-pulse"
+                    style={{ opacity: 0, animationDelay: `${(parent.y / (CARD_H + 80)) * 0.9}s` }}
+                  />
+                </g>
               );
             })}
           </svg>

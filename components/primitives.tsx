@@ -1,22 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { prefersReducedMotion } from "@/lib/motion";
-
-/** Marca do Hive: o hexágono do logo, desenhado em SVG para herdar currentColor. */
-export function HiveMark({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 120 120" className={className} fill="none" aria-hidden="true">
-      <g stroke="currentColor" strokeWidth="6" strokeLinejoin="round">
-        <path d="M60 4 70 10v12l-10 6-10-6V10z" />
-        <path d="M60 30 78 40v20L60 70 42 60V40z" fill="currentColor" />
-        <path d="M26 50 44 60v20l-18 10-18-10V60z" fill="currentColor" />
-        <path d="M60 70 78 80v20l-18 10-18-10V80z" fill="currentColor" />
-        <path d="M94 50 112 60v20l-18 10-18-10V60z" fill="currentColor" />
-      </g>
-    </svg>
-  );
-}
+import { MOTION, prefersReducedMotion } from "@/lib/motion";
 
 /** Logo da marca — o lettering oficial, recortado de `images/` pelo build-logos. */
 export function HiveLogo({ className = "" }: { className?: string }) {
@@ -29,6 +14,32 @@ export function HiveLogo({ className = "" }: { className?: string }) {
       height={497}
       className={`h-9 w-auto ${className}`}
     />
+  );
+}
+
+/** Cabeçalho de seção: título curto e, se houver, uma linha de apoio. O título
+ *  carrega o assunto sozinho — sem rótulo em caixa-alta acima dele. */
+export function SectionHead({
+  id,
+  title,
+  lead,
+  center = false,
+  className = "",
+}: {
+  /** Id do título, para a seção apontar `aria-labelledby` para ele. */
+  id?: string;
+  title: React.ReactNode;
+  lead?: React.ReactNode;
+  center?: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={`${center ? "mx-auto max-w-2xl text-center" : "max-w-xl"} ${className}`}>
+      <h2 id={id} className="h2">
+        {title}
+      </h2>
+      {lead && <p className="lead mt-4">{lead}</p>}
+    </div>
   );
 }
 
@@ -69,12 +80,12 @@ export function Rise({
         const context = gsap.context(() => {
           gsap.from(targets, {
             opacity: 0,
-            y: 20,
-            duration: 0.7,
-            ease: "power2.out",
+            y: MOTION.y,
+            duration: MOTION.duration,
+            ease: MOTION.ease,
             delay: delay / 1000,
-            stagger: stagger ? 0.08 : 0,
-            scrollTrigger: { trigger: node, start: "top 85%", once: true },
+            stagger: stagger ? MOTION.stagger : 0,
+            scrollTrigger: { trigger: node, start: MOTION.start, once: true },
           });
         }, node);
 
