@@ -95,12 +95,12 @@ test("os guias oficiais de cada CLI estão linkados", () => {
   for (const agent of AGENTS) assert.match(AGENT_DOCS[agent], /^https:\/\//);
 });
 
-test("página de instalação: o caminho recomendado é o pacote pelo pnpm, e o WSL é opcional", () => {
+test("página de instalação: instala pelo código-fonte, sem citar um pacote ainda não publicado, e o WSL é opcional", () => {
   const page = readFileSync(new URL("../app/install/page.tsx", import.meta.url), "utf8");
-  assert.match(page, /pnpm add -g hive-agents/, "pnpm é o método principal");
-  assert.match(page, /npm install -g hive-agents/, "npm como alternativa");
-  assert.match(page, /pnpm setup/);
-  assert.match(page, /hive onboard --yes/);
+  assert.match(page, /git clone/);
+  assert.match(page, /pnpm install/);
+  assert.match(page, /pnpm dev/);
+  assert.ok(!/hive-agents|hive onboard --yes|pnpm add -g hive/.test(page), "o pacote npm ainda não existe");
   assert.ok(!/O Hive não roda direto no Windows/.test(page), "o WSL não é requisito");
   assert.match(page, /WSL2 é opcional/);
 });
