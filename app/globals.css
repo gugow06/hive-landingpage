@@ -274,6 +274,45 @@
     box-shadow: var(--ring);
   }
 
+  /* Carrossel de depoimentos: duas trilhas idênticas correm lado a lado, então o laço não tem
+     emenda (a segunda é só visual, veja components/ui/testimonials-marquee.tsx). Pausa no
+     hover e no foco; sem animação com prefers-reduced-motion. */
+  .marquee-row {
+    --gap: 1rem;
+    display: flex;
+    gap: var(--gap);
+    overflow: hidden;
+    padding: 0.5rem 0;
+  }
+
+  .marquee-track {
+    display: flex;
+    flex-shrink: 0;
+    gap: var(--gap);
+    animation: marquee var(--duration, 60s) linear infinite;
+  }
+
+  .marquee-row:hover .marquee-track,
+  .marquee-row:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-row {
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      padding-inline: 1.25rem;
+    }
+
+    .marquee-track {
+      animation: none;
+    }
+
+    .marquee-track[aria-hidden="true"] {
+      display: none;
+    }
+  }
+
   /* Moldura de mídia e de interface: borda fina, profundidade discreta. */
   .frame {
     background: var(--surface);
@@ -741,5 +780,14 @@
     .shiny-cta {
       transition: none;
     }
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
   }
 }

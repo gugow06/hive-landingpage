@@ -17,6 +17,15 @@
         ],
         "createdAt": "2026-10-22T23:01:32.582Z",
         "reason": "Halo do botão shiny (componente do 21st.dev): o brilho âmbar no hover/foco é a assinatura do botão pedido"
+      },
+      {
+        "rule": "marquee",
+        "value": "*",
+        "files": [
+          "http://localhost:**"
+        ],
+        "createdAt": "2026-10-23T14:00:00.000Z",
+        "reason": "Carrossel de depoimentos pedido para a seção de prova social: pausa no hover e no foco, e sem animação com prefers-reduced-motion (vira fileira rolável)"
       }
     ]
   }

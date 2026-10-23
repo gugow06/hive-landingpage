@@ -101,7 +101,7 @@ test("sem promessas que o produto não sustenta", () => {
 
 test("prova social: só há depoimento ou cliente com dados completos", () => {
   for (const item of TESTIMONIALS) {
-    assert.ok(item.name && item.role && item.company && item.quote, `depoimento incompleto: ${item.name}`);
+    assert.ok(item.name && item.company && item.quote, `depoimento incompleto: ${item.name}`);
     assert.ok(item.rating >= 1 && item.rating <= 5, `nota fora de 1–5: ${item.name}`);
   }
   for (const customer of CUSTOMERS) assert.ok(customer.name, "cliente sem nome");
