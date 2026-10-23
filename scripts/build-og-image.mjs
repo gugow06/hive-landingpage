@@ -21,7 +21,7 @@ const COPY = {
   line1: "Sua equipe de IA.",
   line2: "Com direção, memória e controle.",
   sub: "Organize agentes, delegue tarefas e conecte o conhecimento da sua operação.",
-  foot: "hive.dev.br  ·  Gratuito e de código aberto",
+  foot: "hiveagents.com.br  ·  Gratuito e de código aberto",
 };
 
 const asDataUri = (path, type) => `data:${type};base64,${readFileSync(join(root, path)).toString("base64")}`;

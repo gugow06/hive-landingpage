@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     if (process.env.NODE_ENV === "production") {
       console.error("[lgpd] LGPD_WEBHOOK_URL não está definida: o pedido NÃO foi recebido.");
       return NextResponse.json(
-        { error: "O envio está indisponível agora. Escreva para contato@hive.dev.br, por favor." },
+        { error: "O envio está indisponível agora. Escreva para contato@hiveagents.com.br, por favor." },
         { status: 503 },
       );
     }

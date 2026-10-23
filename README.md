@@ -419,8 +419,8 @@ Pillow (`pip install pillow`).
 
 ## Antes de publicar
 
-- `metadataBase` em `app/layout.tsx` está em `https://hive.dev.br` — troque pelo
-  domínio real; ele é a base das URLs de Open Graph.
-- O e-mail `contato@hive.dev.br` aparece no FAQ e nas páginas legais.
+- O domínio é `hiveagents.com.br`, definido em `SITE_URL` (`lib/seo.ts`). Ele é a base das
+  URLs de Open Graph, do sitemap e do JSON-LD. Se mudar, troque também `public/llms.txt`.
+- O e-mail `contato@hiveagents.com.br` aparece no FAQ e nas páginas legais.
 - Preencha `lib/legal.ts` e defina `LGPD_WEBHOOK_URL`.
 - `app/opengraph-image.png` é a imagem de compartilhamento (1200×630).

@@ -4,15 +4,15 @@
 
 ## Para começar
 
-- [Como instalar o Hive](https://hive.dev.br/install): guia passo a passo para Windows, macOS e Linux, com npm ou Docker, e os primeiros passos.
-- [Perguntas frequentes](https://hive.dev.br/#faq): custo, memória, controle dos agentes e privacidade.
+- [Como instalar o Hive](https://hiveagents.com.br/install): guia passo a passo para Windows, macOS e Linux, com npm ou Docker, e os primeiros passos.
+- [Perguntas frequentes](https://hiveagents.com.br/#faq): custo, memória, controle dos agentes e privacidade.
 
 ## O produto
 
-- [Como o Hive trabalha](https://hive.dev.br/#como-funciona): da tarefa ao registro, em cinco passos.
-- [Equipe e execução](https://hive.dev.br/#produto): quem coordena, quem executa e quem revisa.
-- [Memória e grafo](https://hive.dev.br/#memoria): documentos em Markdown ligados por referências.
-- [Controle e auditoria](https://hive.dev.br/#controle): feed de atividades, orçamento por agente e pausa.
+- [Como o Hive trabalha](https://hiveagents.com.br/#como-funciona): da tarefa ao registro, em cinco passos.
+- [Equipe e execução](https://hiveagents.com.br/#produto): quem coordena, quem executa e quem revisa.
+- [Memória e grafo](https://hiveagents.com.br/#memoria): documentos em Markdown ligados por referências.
+- [Controle e auditoria](https://hiveagents.com.br/#controle): feed de atividades, orçamento por agente e pausa.
 
 ## Projeto e comunidade
 
@@ -21,7 +21,7 @@
 
 ## Legal
 
-- [Política de privacidade](https://hive.dev.br/privacidade)
-- [Termos de serviço](https://hive.dev.br/termos)
-- [Política de cookies](https://hive.dev.br/cookies)
-- [Seus dados (LGPD)](https://hive.dev.br/lgpd)
+- [Política de privacidade](https://hiveagents.com.br/privacidade)
+- [Termos de serviço](https://hiveagents.com.br/termos)
+- [Política de cookies](https://hiveagents.com.br/cookies)
+- [Seus dados (LGPD)](https://hiveagents.com.br/lgpd)

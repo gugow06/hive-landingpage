@@ -26,10 +26,10 @@ export const LEGAL = {
   /** Encarregado pelo tratamento de dados (art. 41 da LGPD). */
   encarregado: {
     nome: PENDENTE,
-    email: "contato@hive.dev.br",
+    email: "contato@hiveagents.com.br",
   },
   /** E-mail de contato geral, o mesmo que já aparece no site. */
-  email: "contato@hive.dev.br",
+  email: "contato@hiveagents.com.br",
   /** Comarca para disputas que não envolvam consumidor. */
   foro: PENDENTE,
   /** Provedor de hospedagem do site (operador que guarda os registros de acesso). */

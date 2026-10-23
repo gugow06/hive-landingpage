@@ -13,8 +13,8 @@ export function Faq() {
             lead={
               <>
                 Não achou a sua? Escreva para{" "}
-                <a className="text-accent underline underline-offset-4" href="mailto:contato@hive.dev.br">
-                  contato@hive.dev.br
+                <a className="text-accent underline underline-offset-4" href="mailto:contato@hiveagents.com.br">
+                  contato@hiveagents.com.br
                 </a>
                 .
               </>

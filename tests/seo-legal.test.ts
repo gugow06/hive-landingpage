@@ -78,7 +78,7 @@ test("SEO: robots, sitemap e llms.txt existem e são coerentes", () => {
   assert.match(read("app/robots.ts"), /sitemap\.xml/);
   const llms = read("public/llms.txt");
   assert.match(llms, /^# Hive/);
-  for (const page of PAGES.filter((p) => p.path !== "/")) assert.ok(llms.includes(`https://hive.dev.br${page.path}`), `llms.txt não cita ${page.path}`);
+  for (const page of PAGES.filter((p) => p.path !== "/")) assert.ok(llms.includes(`https://hiveagents.com.br${page.path}`), `llms.txt não cita ${page.path}`);
 });
 
 // ------------------------------------------------------------------------------------- textos

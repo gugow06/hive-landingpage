@@ -84,7 +84,7 @@
 ## 10. Lacunas
 
 - [ ] Razão social, CNPJ, endereço e e-mail do encarregado (LGPD): `lib/legal.ts`.
-- [ ] Domínio definitivo (hoje `hive.dev.br` em `metadataBase`).
+- [ ] Domínio definitivo: `hiveagents.com.br` (definido em `lib/seo.ts`).
 - [ ] Depoimentos reais e logos de quem usa.
 - [ ] Relação exata com Oracle e FIAP (hoje só "Parceiros").
 - [ ] Decisão sobre a telemetria padrão do produto (hoje ligada, envia ao projeto original).

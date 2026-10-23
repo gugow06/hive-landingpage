@@ -10,7 +10,7 @@ import { FAQ } from "./faq.ts";
 import { LEGAL } from "./legal.ts";
 
 /** Endereço público do site. É a base das URLs de Open Graph, do sitemap e do JSON-LD. */
-export const SITE_URL = "https://hive.dev.br";
+export const SITE_URL = "https://hiveagents.com.br";
 export const SITE_NAME = "Hive";
 export const REPO_URL = "https://github.com/gugow06/hive";
 

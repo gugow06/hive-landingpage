@@ -549,7 +549,7 @@ pnpm dev`} />
                 </div>
                 <p className={body}>
                   Não achou o seu caso? <A href={`${REPO_URL}/issues`}>Abra uma issue</A> ou escreva para{" "}
-                  <A href="mailto:contato@hive.dev.br">contato@hive.dev.br</A>.
+                  <A href="mailto:contato@hiveagents.com.br">contato@hiveagents.com.br</A>.
                 </p>
               </section>
             </article>
